@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Name Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the Star Wars theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark charcoal */
+            color: #e2e8f0; /* Light gray */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #2d3748; /* Slightly lighter charcoal */
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid #4a5568; /* Subtle border */
+        }
+        .title {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+            margin-bottom: 1.5rem; /* mb-6 */
+            color: #ecc94b; /* Yellow/Gold for title */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .description {
+            font-size: 1.125rem; /* text-lg */
+            margin-bottom: 2rem; /* mb-8 */
+            color: #cbd5e0; /* Lighter gray for description */
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Space between buttons */
+            margin-bottom: 2rem; /* Space below buttons */
+        }
+        .generate-button {
+            background-color: #4299e1; /* Blue */
+            color: white;
+            padding: 1rem 2rem; /* py-4 px-8 */
+            border-radius: 0.75rem; /* rounded-xl */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+        }
+        .generate-button:hover {
+            background-color: #3182ce; /* Darker blue */
+            transform: translateY(-2px);
+        }
+        .generate-button:active {
+            transform: translateY(0);
+        }
+
+        /* Specific button styles */
+        .jedi-button {
+            background-color: #48bb78; /* Green */
+        }
+        .jedi-button:hover {
+            background-color: #38a169; /* Darker green */
+        }
+        .sith-button {
+            background-color: #e53e3e; /* Red */
+        }
+        .sith-button:hover {
+            background-color: #c53030; /* Darker red */
+        }
+
+        .result-area {
+            margin-top: 2.5rem; /* mt-10 */
+            background-color: #1a202c; /* Darker background for result */
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 1.5rem; /* p-6 */
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed #4a5568; /* Dashed border */
+        }
+        .generated-name {
+            font-size: 1.75rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #63b3ed; /* Light blue for name */
+            word-break: break-all; /* Break long names */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem;
+            }
+            .title {
+                font-size: 1.75rem; /* text-3xl */
+            }
+            .description {
+                font-size: 1rem; /* text-base */
+            }
+            .generated-name {
+                font-size: 1.5rem; /* text-2xl */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Star Wars Name Generator</h1>
+        <p class="description">
+            Discover your unique identity in a galaxy far, far away!
+        </p>
+
+        <div class="button-group">
+            <button id="generateJediButton" class="generate-button jedi-button">Generate Jedi Name</button>
+            <button id="generateSithButton" class="generate-button sith-button">Generate Sith Name</button>
+        </div>
+
+        <div class="result-area">
+            <p id="generatedName" class="generated-name">Your new name will appear here!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateJediButton = document.getElementById('generateJediButton');
+            const generateSithButton = document.getElementById('generateSithButton');
+            const generatedNameDisplay = document.getElementById('generatedName');
+
+            // Expanded arrays of name components, blending classic and new inspirations
+            const firstPrefixes = [
+                'Kael', 'Lyra', 'Zyl', 'Dax', 'Seraph', 'Vex', 'Jor', 'Ryl', 'Fael', 'Corv',
+                'Thal', 'Xyl', 'Bryn', 'Cael', 'Drak', 'Elara', 'Gareth', 'Hael', 'Irid', 'Jaxx',
+                'Kira', 'Lian', 'Mael', 'Nara', 'Orin', 'Prynn', 'Quinn', 'Roric', 'Sera', 'Talon',
+                'Ulf', 'Vara', 'Wren', 'Xian', 'Yara', 'Zane', 'Aric', 'Briar', 'Cinder', 'Draven',
+                'Elora', 'Fynn', 'Gwen', 'Haden', 'Isolde', 'Jareth', 'Kaelen', 'Lira', 'Merek', 'Nyx',
+                'Anak', 'Leia', 'Obi', 'Han', 'Padm', 'Lando', 'Chew', 'Rey', 'Finn', 'Poe',
+                'Kylo', 'Ashoka', 'Din', 'Jyn', 'Kanan', 'Hera', 'Ezra', 'Sabine', 'Thrawn', 'Moff',
+                'Griev', 'Dooku', 'Palp', 'Yoda', 'Mace', 'Qui-Gon', 'Shmi', 'Wedge', 'Biggs', 'Dak',
+                'Nien', 'Ackbar', 'Mon', 'Bail', 'Breha', 'Jabba', 'Boba', 'Jango', 'Cad', 'Aurra',
+                'Bossk', 'Greedo', 'Zuck', 'Watto', 'Sebul', 'Jar Jar', 'Moth', 'Radd', 'Holdo', 'Snoke',
+                'Hux', 'Phasma', 'Maz', 'Rose', 'Paige', 'Temm', 'Cobb', 'Fennec', 'Bo-Ka', 'Hondo',
+                'Saw', 'Chirrut', 'Baze', 'K-2', 'BB-8', 'R2', 'C-3', 'Chop', 'Zeb', 'Gungi',
+                'Tera', 'Gorgu', 'Kix', 'Rex', 'Cody', 'Wolffe', 'Gregor', 'Echo', 'Fives', 'Jesse',
+                'Hard', 'Appo', 'Bly', 'Doom', 'Fordo', 'Gree', 'Neyo', 'Ponds', 'Stone', 'Thire',
+                'Waxer', 'Boil', 'Cross', 'Hunter', 'Tech', 'Wrecker', 'Omega'
+            ];
+
+            const firstSuffixes = [
+                'an', 'ia', 'en', 'os', 'yn', 'ix', 'on', 'el', 'us', 'ara',
+                'ius', 'ora', 'eth', 'den', 'lin', 'wyn', 'iel', 'mar', 'is', 'aen',
+                'lor', 'ys', 'dar', 'ven', 'ael', 'ynn', 'ith', 'ora', 'us', 'yn',
+                'ion', 'ia', 'er', 'al', 'in', 'or', 'ar', 'ean', 'ol', 'ra',
+                'ax', 'eo', 'ir', 'ul', 'il', 'ix', 'o', 'a', 'e', 'i', 'u', 'y',
+                'io', 'ia', 'en', 'us', 'yn', 'ix', 'on', 'el', 'ara', 'eth',
+                'den', 'lin', 'wyn', 'iel', 'mar', 'is', 'aen', 'lor', 'ys', 'dar',
+                'ven', 'ael', 'ynn', 'ith', 'ora', 'us', 'yn', 'ion', 'ia', 'er',
+                'al', 'in', 'or', 'ar', 'ean', 'ol', 'ra', 'ax', 'eo', 'ir',
+                'ul', 'en', 'il', 'yn', 'os', 'ix', 'a', 'e', 'i', 'o', 'u', 'y'
+            ];
+
+            const lastPrefixes = [
+                'Vance', 'Solara', 'Kryll', 'Astra', 'Zenith', 'Shadow', 'Iron', 'Star', 'Deep', 'Crimson',
+                'Night', 'Storm', 'Sky', 'Stone', 'Light', 'Dark', 'Whisper', 'Silent', 'Void', 'Echo',
+                'Silver', 'Golden', 'Steel', 'Jade', 'Obsidian', 'Crystal', 'Mythic', 'Ancient', 'Noble', 'Fallen',
+                'Wild', 'Free', 'Bright', 'Distant', 'Lost', 'Hidden', 'Burning', 'Frozen', 'Woven', 'Broken',
+                'Sun', 'Moon', 'River', 'Mountain', 'Forest', 'Desert', 'Ocean', 'Cloud', 'Wind', 'Dust',
+                'Sky', 'Solo', 'Organa', 'Keno', 'Ami', 'Calriss', 'Fett', 'Palp', 'Vader', 'Ren',
+                'Dameron', 'Mando', 'Tano', 'Vizsla', 'Kryze', 'Erso', 'Andor', 'Rook',
+                'Gerrera', 'Mal', 'Revan', 'Bastila', 'Kreia', 'Nihilus', 'Traya', 'Sion', 'Exar', 'Ulic',
+                'Nomi', 'Jarael', 'Cade', 'Krayt', 'Plagueis', 'Sidious', 'Maul', 'Ventress', 'Savage', 'Oppress',
+                'Inquisitor', 'Grand', 'Captain', 'Commander', 'General', 'Admiral', 'Senator', 'Queen', 'King', 'Prince',
+                'Princess', 'Count', 'Baron', 'Lord', 'Lady', 'Master', 'Knight', 'Padawan', 'Apprentice', 'Clone',
+                'Storm', 'Rebel', 'Imperial', 'First Order', 'Resistance', 'Republic', 'Separatist', 'Trade', 'Federation', 'Guild',
+                'Bounty', 'Hunter', 'Smuggler', 'Pilot', 'Mechanic', 'Scavenger', 'Engineer', 'Doctor', 'Scientist', 'Artist',
+                'Musician', 'Dancer', 'Writer', 'Teacher', 'Student', 'Farmer', 'Miner', 'Trader', 'Merchant', 'Guard',
+                'Soldier', 'Spy', 'Assassin', 'Thief', 'Rogue', 'Wookiee', 'Twi\'lek', 'Zabrak', 'Togruta', 'Ithorian',
+                'Mon Cala', 'Rodian', 'Trandoshan', 'Gamorrean', 'Ugnaught', 'Jawa', 'Tusken', 'Ewok', 'Gungan', 'Droid',
+                'Protocol', 'Astromech', 'Battle'
+            ];
+
+            const lastSuffixes = [
+                'wood', 'guard', 'holm', 'vane', 'light', 'born', 'strike', 'wind', 'shard', 'crest',
+                'blade', 'shield', 'heart', 'song', 'walker', 'rider', 'weaver', 'binder', 'watcher', 'keeper',
+                'fall', 'rise', 'gaze', 'flow', 'stride', 'reach', 'bound', 'mark', 'hand', 'wing',
+                'fire', 'frost', 'gloom', 'spark', 'glow', 'mist', 'dream', 'truth', 'hope', 'fate',
+                'star', 'stone', 'leaf', 'root', 'branch', 'peak', 'vale', 'shore', 'field', 'path',
+                'walker', 'lo', 'gana', 'bi', 'dala', 'ian', 'ett', 'tine', 'er', 'en',
+                'eron', 'master', 'lord', 'lorian', 'soka', 'zla', 'yze', 'so', 'dor', 'hawk',
+                'dera', 'gus', 'van', 'shan', 'eia', 'lus', 'ya', 'ion', 'cun', 'lic',
+                'mi', 'ael', 'ade', 'rayt', 'gueis', 'dious', 'ul', 'tress', 'press', 'sitor',
+                'admiral', 'general', 'captain', 'commander', 'senator', 'queen', 'king', 'prince', 'princess', 'count',
+                'baron', 'lord', 'lady', 'master', 'knight', 'padawan', 'apprentice', 'clone', 'trooper', 'rebel',
+                'imperial', 'order', 'resistance', 'republic', 'separatist', 'trader', 'hunter', 'pilot', 'mechanic', 'scavenger',
+                'engineer', 'doctor', 'scientist', 'artist', 'musician', 'dancer', 'writer', 'teacher', 'student', 'farmer',
+                'miner', 'guard', 'soldier', 'spy', 'assassin', 'thief', 'rogue', 'wookiee', 'lek', 'brak',
+                'gruta', 'orian', 'calamari', 'dian', 'doshan', 'orrean', 'gnaught', 'jawa', 'tusken', 'ewok',
+                'gungan', 'droid', 'bot', 'mech', 'unit', 'servant', 'protocol', 'astromech', 'battle'
+            ];
+
+            const uniqueMiddleParts = [
+                '\'an', '\'en', '\'el', '\'ra', '\'ys', '\'dor', '\'lin', '\'vax', '\'nix', '\'kor',
+                '\'ael', '\'wyn', '\'ith', '\'or', '\'dar', '\'ven', '\'ira', '\'sol', '\'mor', '\'ryn',
+                '\'al', '\'er', '\'il', '\'ol', '\'ul', '\'yn', '\'os', '\'ix', '\'ax', '\'eo',
+                '\'ir', '\'us', '\'ara', '\'eth', '\'den', '\'lin', '\'wyn', '\'iel', '\'mar', '\'is'
+            ]; // For more alien sounds
+
+            // Specific Jedi and Sith name components
+            const jediFirstNames = [
+                'Kira', 'Jaden', 'Corran', 'Kyle', 'Mara', 'Bastila', 'Revan', 'Satele', 'Caleb', 'Kanan',
+                'Ezra', 'Ahsoka', 'Shaak', 'Plo', 'Kit', 'Aayla', 'Luminara', 'Ki-Adi', 'Depa', 'Quinlan',
+                'Obi-Wan', 'Mace', 'Yoda', 'Qui-Gon', 'Luke', 'Leia', 'Rey', 'Cal', 'Cere', 'Tarfful',
+                'Jacen', 'Jaina', 'Ben', 'Grogu', 'Gungi', 'Tera', 'Stellan', 'Vernestra', 'Elzar', 'Avar',
+                'Kyp', 'Jocasta', 'Coleman', 'Even', 'Adi', 'Eeth', 'Saesee', 'Agen', 'Sora', 'Oppo',
+                'Anakin', 'Finn', 'Poe', 'Jyn', 'Cassian', 'Chirrut', 'Baze', 'Lando', 'Han', 'Chewbacca',
+                'Kai-Lor', 'Zyara', 'Lena', 'Elara', 'Kylan', 'Dara', 'Rovan', 'Tessia', 'Varek', 'Sora',
+                'Bennor', 'Yenna', 'Torin', 'Keira', 'Loran', 'Daven', 'Mira', 'Tylara'
+            ];
+            const jediLastNames = [
+                'Sunrider', 'Kor', 'Katarn', 'Jade', 'Shan', 'Jarrus', 'Bridger', 'Tano', 'Ti', 'Koon',
+                'Fisto', 'Secura', 'Unduli', 'Mundi', 'Billaba', 'Vos', 'Kenobi', 'Windu', 'Skywalker', 'Organa',
+                'Palpatine', 'Kestis', 'Junda', 'Wookiee', 'Solo', 'Cade', 'Highlander', 'Rwoh', 'Aqualish', 'Kiffar',
+                'Durron', 'Nu', 'Trebor', 'Piell', 'Gallia', 'Koth', 'Tiin', 'Kolar', 'Bulq', 'Rancisis',
+                'Dameron', 'Erso', 'Andor', 'Imwe', 'Malbus', 'Calrissian', 'Solo', 'Fett',
+                'Vahn', 'Ke', 'Yadreen', 'Wynd', 'Vos', 'Fel', 'Danik', 'Sol', 'Jyn', 'Arak',
+                'Fara', 'Gale', 'Vek', 'Skorr', 'Sorn', 'Nox'
+            ];
+            const sithTitles = [
+                'Darth', 'Dark Lord', 'Emperor', 'Apprentice' // 'Lord' removed
+            ];
+            const sithFirstNames = [
+                'Maul', 'Vader', 'Sidious', 'Tyranus', 'Plagueis', 'Nihilus', 'Sion', 'Traya', 'Malgus', 'Revan',
+                'Exar', 'Ulic', 'Krayt', 'Ventress', 'Savage', 'Oppress', 'Snoke', 'Kylo', 'Phasma', 'Hux',
+                'Kreia', 'Scourge', 'Zannah', 'Cognus', 'Bane', 'Tenebrous', 'Andeddu', 'Vitiate', 'Malak', 'Naga',
+                'Ajunta', 'Marka', 'Freedon', 'Lumiya', 'Kaan', 'Qordis', 'Rivan', 'Desolous', 'Xedrix', 'Wyyrlok',
+                'Sheev', 'Dooku', 'Grievous', 'Thrawn',
+                'Venatus', 'Maledro', 'Ravana', 'Kryos', 'Nihylis', 'Varis', 'Morvayne', 'Xyrris', 'Venomous', 'Solix',
+                'Renatus', 'Voryn', 'Phyrex', 'Nexis', 'Malphus', 'Scythor', 'Vexor', 'Mortalis', 'Zephyros', 'Quorix',
+                'Venefica', 'Valdred', 'Xanthus', 'Severan', 'Arcanix', 'Veritus', 'Morvex', 'Krayl', 'Tenebris', 'Voryll',
+                'Zevron', 'Umbra', 'Malvorus', 'Vornus', 'Voren', 'Zarus', 'Vespera', 'Malric', 'Varathor'
+            ];
+            const sithLastNames = [
+                'Sidious', 'Vader', 'Maul', 'Tyranus', 'Plagueis', 'Nihilus', 'Sion', 'Traya', 'Malgus', 'Revan',
+                'Kun', 'Qel-Droma', 'Krayt', 'Ventress', 'Oppress', 'Ren', 'Phasma', 'Hux', 'Palpatine', 'Tarkin',
+                'Ordo', 'Bane', 'Zannah', 'Cognus', 'Tenebrous', 'Andeddu', 'Vitiate', 'Malak', 'Sadow', 'Ragnos',
+                'Pall', 'Ragnos', 'Nadd', 'Darklighter', 'Malcor', 'Fel', 'Kardas', 'Sadow', 'Krayt', 'Wyyrlok',
+                'Palpatine', 'Dooku', 'Grievous', 'Thrawn', 'Tarkin'
+            ];
+
+
+            function getRandomElement(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+
+            // Helper function to capitalize and format names
+            const capitalizeAndFormat = (namePart) => {
+                if (namePart.includes('-') || /\d/.test(namePart)) {
+                    return namePart;
+                }
+                return namePart.charAt(0).toUpperCase() + namePart.slice(1).toLowerCase();
+            };
+
+            // Function to generate a Jedi name specifically
+            function generateJediName() {
+                const jediFirstName = getRandomElement(jediFirstNames);
+                const jediLastName = getRandomElement(jediLastNames);
+                return `${capitalizeAndFormat(jediFirstName)} ${capitalizeAndFormat(jediLastName)}`;
+            }
+
+            // Function to generate a Sith name specifically
+            function generateSithName() {
+                const sithTitle = getRandomElement(sithTitles);
+                const sithNamePart = Math.random() < 0.5 ? getRandomElement(sithFirstNames) : getRandomElement(sithLastNames);
+                // Sith titles like "Darth" should retain their original casing
+                return `${sithTitle} ${capitalizeAndFormat(sithNamePart)}`;
+            }
+
+            // Event Listeners for the buttons
+            generateJediButton.addEventListener('click', () => {
+                generatedNameDisplay.textContent = generateJediName();
+            });
+
+            generateSithButton.addEventListener('click', () => {
+                generatedNameDisplay.textContent = generateSithName();
+            });
+
+            // Generate a Jedi name on initial load since there's no "random" mix button
+            generatedNameDisplay.textContent = generateJediName();
+        });
+    </script>
+</body>
+</html>
